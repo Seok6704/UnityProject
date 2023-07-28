@@ -15,12 +15,15 @@ public class CrossGame : MonoBehaviour
     bool M_Stop;
     Vector3 pos;
 
+    bool isClear; //성공여부
+
     void Awake()
     {
         anim = GameObject.Find("Walker").GetComponent<Animator>();    
         flag = false;
         Move = false;
         M_Stop = false;
+        isClear = false;
     }
 
     void Update()
@@ -30,9 +33,12 @@ public class CrossGame : MonoBehaviour
             time += Time.deltaTime;
             pos = this.transform.position; // 현재 Walker 위치 담는 변수
             if(pos.x >= 2140) // 도착 지점 도달 시
-            { 
+            {
+                isClear = true;
                 flag = false;
                 Dialog.GetComponent<DialoguesManager>().SetDialogue(903, 2);
+                isClear = true;
+                Invoke("SceneChanger", 5f);
             }
 
             if( (time > 5 && time < 8) || (time > 13 && time < 15) ||  (time > 24 && time < 26) || (time > 30 && time < 31) || (time > 39 && time < 41) || (time > 49 && time < 51)) // 음악이 멈추는 시간
@@ -45,17 +51,19 @@ public class CrossGame : MonoBehaviour
             {
                 flag = false;
                 Dialog.GetComponent<DialoguesManager>().SetDialogue(903, 3);
+                isClear = false;
+                Invoke("SceneChanger", 5f);
             }
 
             if(Move && pos.x <= 2150 && !M_Stop) // 버튼이 클릭되고 있고, Walker가 도착점에 도착하지 않았을 경우, 위치 이동.
             {
-                transform.Translate(new Vector3(0.2f, 0, 0));
+                transform.Translate(new Vector3(0.15f, 0, 0));
                 anim.SetBool("Btn_R_Click", true);
             }
 
             else if( Move && pos.x <= 2150 && M_Stop ) // 버튼이 클릭되고 있고, 음악이 멈춰있는 도중일 경우
             {
-                transform.Translate(new Vector3(0.2f, 0, 0));
+                transform.Translate(new Vector3(0.15f, 0, 0));
                 anim.SetBool("Btn_R_Click", true);
                 flag = false;
                 Dialog.GetComponent<DialoguesManager>().SetDialogue(903, 1);
@@ -84,7 +92,6 @@ public class CrossGame : MonoBehaviour
         AudioClip clip = Resources.Load("Sounds/Minigame/1-S-1/Music") as AudioClip;
         audioSrc.PlayOneShot(clip);
         flag = true;
-        GameObject.Find("Start").SetActive(false);
     }
 
     void SceneChanger() //씬 전환 함수
@@ -98,14 +105,9 @@ public class CrossGame : MonoBehaviour
         {
             if(objects[i].name == "SceneManager" || objects[i].name == "Scene Manager")
             {
-                objects[i].GetComponent<SceneController>().AdditiveEnded();
+                objects[i].GetComponent<SceneController>().AdditiveEnded(isClear);
                 break;
             }
         }
-    }
-
-    void Scenechange()
-    {
-        SceneManager.LoadScene("Chapter0");
     }
 }
