@@ -27,6 +27,7 @@ public class DoorChoice : MonoBehaviour
             if(ram == 0)
             {
                 isClear = true;
+                ClearAndFail.GameClear();
                 Invoke("SceneChange", 2f);
             }
             else Invoke("SceneChange", 2f);
@@ -42,6 +43,7 @@ public class DoorChoice : MonoBehaviour
             if(ram == 1)
             {
                 isClear = true;
+                ClearAndFail.GameClear();
                 Invoke("SceneChange", 2f);
             }
             else Invoke("SceneChange", 2f);
@@ -57,6 +59,7 @@ public class DoorChoice : MonoBehaviour
             if(ram == 2)
             {
                 isClear = true;
+                ClearAndFail.GameClear();
                 Invoke("SceneChange", 2f);
             }
             else Invoke("SceneChange", 2f);
@@ -72,6 +75,7 @@ public class DoorChoice : MonoBehaviour
             if(ram == 3)
             {
                 isClear = true;
+                ClearAndFail.GameClear();
                 Invoke("SceneChange", 2f);
             }
             else Invoke("SceneChange", 2f);
@@ -169,25 +173,25 @@ public class DoorChoice : MonoBehaviour
     void HelpSound()
     {
         //아이가 도와달라고 외치는 소리 재생
-        Debug.Log("HELP!");
+        Dialog.GetComponent<DialoguesManager>().SetDialogue(911, 1);
     }
 
     void WorkerSound()
     {
         //타워 직원들의 잡담 소리 재생
-        Debug.Log("BLAHBLAH~!");
+        Dialog.GetComponent<DialoguesManager>().SetDialogue(911, 2);
     }
 
     void SleepSound()
     {
         // 코골면서 자는 사람의 소리 재생
-        Debug.Log("SLEEEEEPPPPPPP~~~");
+        Dialog.GetComponent<DialoguesManager>().SetDialogue(911, 3);
     }
 
     void EmergencySound()
     {
         // 기계 고장음과 다급한 목소리 재생
-        Debug.Log("NO!!!!!!!");
+        Dialog.GetComponent<DialoguesManager>().SetDialogue(911, 4);
     }
 
     public void BtnStartClick()

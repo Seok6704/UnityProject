@@ -4,18 +4,58 @@ using UnityEngine;
 using TMPro;
 using UnityEngine.SceneManagement;
 
-public class UnlockGame : MonoBehaviour
+public class QuestionGame : MonoBehaviour
 {
+    public GameObject Dialog;
     VoiceManager voice;
     bool flag = true; // 녹음 동작용 플래그
     public TextMeshProUGUI orderText; // 입력된 텍스트
     string recordText; // 녹음된 텍스트
-    string correctText = "사용을 종료하겠습니다."; // 정답 문구
-    public static bool isClear; // 클리어 확인 변수, 클리어 시, 감옥 해제 애니메이션 재생을 위해 해당 스크립트는 public static으로 작성되었음.
+    List<string> answerList = new List<string> {"홀리 몰리.", "제임스.", "로즈.", "자동차.", "타워."};
+    string correctText;
+    public static bool isClear;
+    int ran, count = 0;
 
     void Start()
     {
         voice = GameObject.Find("Panel_Minigame").GetComponent<VoiceManager>();
+    }
+
+    public void OnStartClick()
+    {
+        ShowQuestion(true);
+    }
+
+    void ShowQuestion(bool flag)
+    {
+        if(flag)
+        {
+            ran = Random.Range(0, answerList.Count - 1);
+            count++;
+        }
+        switch (answerList[ran])
+        {
+            case "홀리 몰리.":
+                Dialog.GetComponent<DialoguesManager>().SetDialogue(900, 1);
+                correctText = answerList[ran];
+                break;
+            case "제임스.":
+                Dialog.GetComponent<DialoguesManager>().SetDialogue(900, 2);
+                correctText = answerList[ran];
+                break;
+            case "로즈.":
+                Dialog.GetComponent<DialoguesManager>().SetDialogue(900, 3);
+                correctText = answerList[ran];
+                break;
+            case "자동차.":
+                Dialog.GetComponent<DialoguesManager>().SetDialogue(900, 4);
+                correctText = answerList[ran];
+                break;
+            case "타워.":
+                Dialog.GetComponent<DialoguesManager>().SetDialogue(900, 5);
+                correctText = answerList[ran];
+                break;
+        }
     }
 
     public void OnClickRecording() // 명령 버튼 클릭 시, 동작할 함수
@@ -36,6 +76,7 @@ public class UnlockGame : MonoBehaviour
     {
         voice.stopRecording();
         voice.CallPost(); // 녹음된, wav 파일 전송
+        orderText.text = "현재 입력된 명령 : 명령 입력중....";
         StartCoroutine(GetText());
     }
 
@@ -51,13 +92,21 @@ public class UnlockGame : MonoBehaviour
         orderText.text = "현재 입력된 명령 : " + recordText;
         if(recordText == correctText) 
         {
-            isClear = true;
-            Invoke("SceneChanger", 2f);
+            answerList.RemoveAt(ran);
+            if(count >= 3)
+            {
+                isClear = true;
+                ClearAndFail.GameClear();
+                Invoke("SceneChanger", 2f);
+            }
+            else
+            {
+                ShowQuestion(true);
+            }
         }
         else
         {
-            isClear = false;
-            Invoke("SceneChanger", 2f);
+            ShowQuestion(false);
         }
     }
 
@@ -77,6 +126,4 @@ public class UnlockGame : MonoBehaviour
             }
         }
     }
-
-
 }

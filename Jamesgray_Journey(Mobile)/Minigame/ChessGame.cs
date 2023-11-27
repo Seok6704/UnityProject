@@ -12,6 +12,7 @@ using UnityEngine.SceneManagement;
 
 public class ChessGame : MonoBehaviour
 {
+    public GameObject Dialog;
     GameObject clickObj, clickCell;
     Outline outline;
     List<GameObject> onOutline = new List<GameObject>();
@@ -25,6 +26,7 @@ public class ChessGame : MonoBehaviour
     Vector3 ponePos, knightPos, bishopWPos, bishopBPos, rookPos;
     bool isClear;
     int blinkCount;
+    int count = 0;
 
     void Start()
     {
@@ -67,8 +69,17 @@ public class ChessGame : MonoBehaviour
     {
         if(ponePos == GameObject.Find("pone").transform.position && knightPos == GameObject.Find("knight").transform.position && bishopWPos == GameObject.Find("bishopW").transform.position && bishopBPos == GameObject.Find("bishopB").transform.position && rookPos == GameObject.Find("rook").transform.position)
         {
+            Dialog.GetComponent<DialoguesManager>().SetDialogue(900, 3);
             isClear = true;
-            SceneChanger();
+            ClearAndFail.GameClear();
+            Invoke("NextScene", 3f);
+        }
+        if(count >= 15)
+        {
+            Dialog.GetComponent<DialoguesManager>().SetDialogue(900, 4);
+            isClear = false;
+            ClearAndFail.GameFail();
+            Invoke("SceneChanger", 3f);
         }
     }
 
@@ -365,6 +376,11 @@ public class ChessGame : MonoBehaviour
                 break;
             }
         }
+    }
+
+    void NextScene()
+    {
+        SceneManager.LoadScene("Chapter4-2");
     }
 }
 
